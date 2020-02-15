@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let linkList = new Linklist();
+    function Linklist() {
+      //链表内部对象
+      function Node(item, next) {
+        //初始化一个节点
+        this.item = item;
+        //初始化这个节点的下一个节点
+        this.next = next;
+      }
+
+      //链表总长度
+      this.length = 0;
+
+      //头部节点对象,初始化为空
+      this.head = null;
+
+      // append(element) ：向列表尾部添加一个新的项
+      this.append = function (element) {
+        node = new Node(element, null)
+        let currentNode = this.head;
+        //如果头部为空
+        if (!currentNode) {
+          //头部为空直接将节点添加到头部
+          this.head = node
+        } else {
+          //如果已经有了头部节点,从头部节点开始遍历查找
+          while (currentNode.next !== null) {
+            //从头部开始一直找到最后那个节点
+            currentNode = currentNode.next
+          }
+          //找到最后节点之后需要在尾部添加最后一个节点
+          currentNode.next = node;
+        }
+        //不论如何添加的节点都会导致链表长度+1
+        this.length++
+      }
+      // insert(position, element) ：向列表的特定位置前插入一个新的项。
+      this.insert = function (position, element) {
+        //如果插入下标不在0和最大长度之间则链表下标越界
+        if (position < 0 || position >= this.size()) throw new Error("链表长度越界")
+        //待插入的Node
+        let node;
+        //插入Node的前一个Node
+        let currentNode = this.head;
+        //position为0表示在头部插入一个新的节点
+        if (position === 0) {
+          //如果要在最前部添加,后一个节点就是this.head
+          node = new Node(element, currentNode);
+          //将新的头部修改为新的Node
+          this.head = node;
+          //将旧的头部修改为新的node的next属性
+          this.next = currentNode;
+        } else {
+          //逐级递减找到满足条件的链接
+          while (position !== 1) {
+            currentNode = currentNode.next
+            position--
+          }
+          currentNode.next = new Node(element, currentNode.next)
+        }
+        this.length++
+        return this.size()
+      }
+      // remove(element) ：从列表中移除一项。
+      this.remove = function (element) {
+        if (position < 0 || position >= this.size()) throw new Error("链表长度越界")
+        //找到当前项
+        let currentNode = this.head
+        //查看元素内容是否等于当前项的下一项
+        while (element !== currentNode.next.item) {
+          currentNode = currentNode.next
+        }
+        //满足条件的项将修改next指针指向下下个
+        currentNode.next = currentNode.next.next
+        //length调整
+        this.length--
+      }
+      // indexOf(element) ：返回元素在列表中的索引。如果列表中没有该元素则返回 - 1。
+      this.indexOf = function (element) {
+        let currentNode = this.head
+        let position = 0
+        while (element !== currentNode.item) {
+          currentNode = currentNode.next
+          position++
+        }
+        return position
+      }
+      // removeAt(position) ：从列表的特定位置移除一项。
+      this.removeAt = function (position) {
+        //找到删除节点的下一个节点
+        let currentNode = this.head;
+        if (position < 0) throw new Error("位置参数需要传入一个正整数")
+        //如果删除的是头部位置
+        if (position === 0) {
+          this.head = this.head.next
+        } else {
+          while (position !== 1) {
+            //找到当前节点的前一个节点
+            currentNode = currentNode.next
+            position--
+          }
+          if (currentNode.next) {
+            currentNode.next = currentNode.next.next
+          }
+        }
+        this.length--
+      }
+      // isEmpty() ：如果链表中不包含任何元素，返回true，如果链表长度大于0则返回false。
+      this.isEmpty = function () {
+        return this.length === 0 ? true : false;
+      }
+      // size() ：返回链表包含的元素个数。与数组的length属性类似。
+      this.size = function () {
+        return this.length;
+      }
+      // toString() ：由于列表项使用了Node类，就需要重写继承自JavaScript对象默认的toString方法，让其只输出元素的值。
+      this.toString = function () {
+        let resultStr = this.head.item;
+        let currentNode = this.head;
+        while (currentNode) {
+          resultStr += `, ${currentNode.item}`
+          currentNode = currentNode.next
+        }
+        return resultStr
+      }
+    }
+
+    let ll = new Linklist();
+    ll.append("aaa")
+    ll.append("bbb")
+    ll.append("ccc")
+    ll.remove("bbb")
+    ll.append("ddd")
+    console.log(`aaa的下标为: ${ll.indexOf("aaa")}`)
+    console.log(`ccc的下标为: ${ll.indexOf("ccc")}`)
+    console.log(`ddd的下标为: ${ll.indexOf("ddd")}`)
+    //aaa ccc ddd
+    console.log(`链表长度为: ${ll.size()}`)
+    ll.removeAt(2)
+    console.log(`aaa的下标为: ${ll.indexOf("aaa")}`)
+    console.log(`ccc的下标为: ${ll.indexOf("ccc")}`)
+    console.log(`链表长度为: ${ll.size()}`)
+    ll.insert(1, "ddd")
+    console.log(`链表长度为: ${ll.size()}`)
+    console.log(`aaa的下标为: ${ll.indexOf("aaa")}`)
+    console.log(`ccc的下标为: ${ll.indexOf("ccc")}`)
+    console.log(`ddd的下标为: ${ll.indexOf("ddd")}`)
+    console.log(ll.toString())
+  </script>
+</body>
+
+</html>
